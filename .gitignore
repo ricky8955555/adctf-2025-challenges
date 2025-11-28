@@ -9,12 +9,12 @@ bin/
 obj/
 
 # Challenge artifacts / attachments
-*/artifacts
-*/attachments
-/artifacts.tar.gz
+/challenges/*/artifacts
+/challenges/*/attachments
+/files
 
 # Challenge solution working directory
-*/solution
+/challenges/*/solution
 
 # VSCode configurations
 .vscode/
