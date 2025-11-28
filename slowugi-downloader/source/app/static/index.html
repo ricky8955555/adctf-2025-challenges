@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SlowUGI-Downloader</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">SlowUGI-Downloader</h1>
+    <form class="row g-3 my-3 float-end" id="fetchForm">
+      <div class="col-auto">
+        <input type="url" name="url" class="form-control" placeholder="URL">
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary mb-3">Fetch</button>
+      </div>
+    </form>
+    <table class="table mt-3" id="taskTable">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Target</th>
+          <th scope="col">Status</th>
+          <th scope="col">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const checkAuth = async () => {
+      const authResp = await fetch("/ugi-bin/auth.ugi");
+      if (authResp.redirected) {
+        window.location.assign(authResp.url);
+      }
+    };
+
+    const fetchTasks = async () => {
+      const tbody = document.querySelector("#taskTable > tbody");
+
+      const tasksResp = await fetch("/ugi-bin/tasks.ugi");
+      const tasks = (await tasksResp.text());
+
+      for (const task of tasks.split("\n")) {
+        if (task === "") continue;
+
+        const statusUrl = new URL("/ugi-bin/task-status.ugi", window.location.origin);
+        statusUrl.searchParams.append("id", task);
+        const statusResp = await fetch(statusUrl);
+        const status = await statusResp.text();
+
+        const targetUrl = new URL("/ugi-bin/task-target.ugi", window.location.origin);
+        targetUrl.searchParams.append("id", task);
+        const targetResp = await fetch(targetUrl);
+        const target = await targetResp.text();
+
+        tbody.innerHTML += `
+<tr>
+  <th scope="row">${task}</th>
+  <td>${target}</td>
+  <td>${status}</td>
+  <td>
+    <a href="ugi-bin/download.ugi?id=${task}" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover me-1">Download</a>
+    <a href="ugi-bin/view-log.ugi?id=${task}" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">View Log</a>
+  </td>
+</tr>
+        `;
+      }
+    };
+
+    document.getElementById("fetchForm").onsubmit = async (e) => {
+      e.preventDefault();
+
+      const search = new URLSearchParams(new FormData(e.target)).toString();
+      const url = new URL("/ugi-bin/fetch.ugi", window.location.origin);
+      url.search = search;
+
+      const resp = await fetch(url);
+      const taskId = await resp.text();
+
+      alert(`Task created: ${taskId}`);
+      window.location.reload();
+    };
+
+    checkAuth();
+    fetchTasks();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% if discount %}
+{% set value = (item.value * item.discount) | round(2) %}
+{% else %}
+{% set value = item.value %}
+{% endif %}
+
+{% block content %}
+<h3 class="text-center mb-3"><b>提交订单</b></h3>
+
+{% if alert %}
+<div class="alert alert-danger" role="alert">
+  {{ alert }}
+</div>
+{% endif %}
+
+<div class="card mb-3">
+  <div class="card-body">
+    <a href="/address/{{ item.id }}?discount={{ discount }}" class="d-block stretched-link"></a>
+    <h4 class="card-title">
+      {% if delivery %}
+      <span class="text-start"><b>{{ delivery.address }}</b></span>
+      {% else %}
+      <span class="text-start text-danger"><b>新增收货地址</b></span>
+      {% endif %}
+      <span class="float-end text-secondary">></span>
+    </h4>
+    {% if delivery %}
+    <p class="card-text text-secondary"><small></small><span>{{ delivery.name }}先生小姐</span><span class="ms-2">{{
+        delivery.phone }}</span></small></p>
+    {% endif %}
+    <p class="card-subtitle mt-3">拼单成功后约{{ cost }}送达</p>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <ul class="list-group list-group-flush">
+    <div class="card-header bg-white text-secondary border-bottom-0">
+      <small>{{ merchant.name }}</small>
+    </div>
+    <li class="list-group-item pt-1">
+      <div class="row g-0">
+        <div class="col-2 d-flex flex-wrap align-items-center">
+          <img src="{{ item.image }}" class="img-fluid rounded">
+        </div>
+        <div class="col-7 px-2 lh-sm py-1" style="font-size: 0.9rem;">
+          <p class="mb-0">{{ item.name }}</p>
+          <small>
+            <p class="card-text text-secondary">x1</p>
+          </small>
+        </div>
+        <div class="col-3 text-end px-0 py-1">
+          <p class="mb-0"><small>￥{{ value }}</small></p>
+        </div>
+      </div>
+    </li>
+    <li class="list-group-item fs-5 fw-normal py-3">
+      <span class="float-start">小计</span>
+      <span class="float-end"><small>￥</small>{{ value }}</span>
+    </li>
+  </ul>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <p class="card-text">
+      <span class="text-start"><b>余额支付</b></span>
+      <span class="float-end"><small>￥</small>{{ customer.balance | round(2) }}</span>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div style="height: 10rem"></div>
+<div class="container-fluid bg-white py-2 text-center fixed-bottom w-100 mx-0 mb-0 border-top">
+  <div class="float-start mt-2">
+    <p href="/order/{{ item.id }}" class="text-danger fw-semibold text-start align-middle d-table-cell">
+      <small>￥</small><span class="fs-3">{{ value }}</span>
+    </p>
+  </div>
+  <div class="float-end">
+    {% if delivery %}
+    <form method="POST">
+      <button type="submit" class="btn btn-lg btn-danger fw-semibold">立即支付</a>
+    </form>
+    {% else %}
+    <a href="?alert=收货地址未填写" class="btn btn-lg btn-danger fw-semibold">立即支付</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

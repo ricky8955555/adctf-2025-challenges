@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3 class="text-center mb-4"><b>新增收货地址</b></h3>
+
+<form class="mx-2">
+  <div class="row mb-3">
+    <div class="input-group">
+      <div class="input-group-text bg-transparent border-0 col-3">地址</div>
+      <input type="text" name="address" class="form-control border-0 bg-transparent border-bottom col-9">
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="input-group">
+      <div class="input-group-text bg-transparent border-0 col-3">联系人</div>
+      <input type="text" name="name" class="form-control border-0 bg-transparent border-bottom col-9">
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="input-group">
+      <div class="input-group-text bg-transparent border-0 col-3">手机号</div>
+      <input type="text" name="phone" class="form-control border-0 bg-transparent border-bottom col-9"
+        pattern="[0-9]{11}">
+    </div>
+  </div>
+  <div class="px-5 mt-4">
+    <button type="submit" class="btn btn-lg btn-danger w-100 px-5">保存地址</button>
+  </div>
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  const form = document.querySelector('form');
+  form.onsubmit = (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const delivery = JSON.stringify(Object.fromEntries(formData));
+
+    const url = new URL("/order/{{ item.id }}", window.location.origin);
+    url.searchParams.append("discount", "{{ discount }}");
+    url.searchParams.append("delivery", delivery);
+
+    window.location.assign(url);
+  }
+</script>
+{% endblock %}

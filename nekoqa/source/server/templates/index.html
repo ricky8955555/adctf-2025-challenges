@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdmirror.com/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .markdown strong {
+      color: brown;
+    }
+
+    .markdown em {
+      color: deepskyblue;
+    }
+
+    .markdown del {
+      color: gray;
+    }
+
+    .markdown blockquote {
+      border-left: 3px solid violet;
+      color: darkviolet;
+      padding-left: 0.75rem;
+    }
+
+    .markdown img {
+      max-width: 100%;
+    }
+
+    @media screen and (min-width: 960px) {
+      .markdown img {
+        max-width: 50%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="container mt-5">
+    <div id="alert" class="alert d-none" role="alert">
+    </div>
+    <h1 class="text-center mt-5">{{ title }}</h1>
+  </header>
+
+  <main class="container my-5">
+
+    {% for problem in problems %}
+    <div class="container mt-5">
+      <p class="mb-1 markdown"><span>{{ loop.index }}. </span>{{ problem.question }}</p>
+      <p class="text-secondary text-end mb-2"><small>Pattern: <code>{{ problem.validation }}</code></small></p>
+      <div class="input-group mb-3">
+        <div class="input-group-text">Answer</div>
+        <input type="text" class="form-control answer-input" pattern="{{ problem.validation }}"
+          problem-id="{{ problem.id }}" required>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="mt-5">
+      <button class="btn btn-outline-primary" onclick="submit();">Submit</button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdmirror.com/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdmirror.com/npm/markdown-it@14/dist/markdown-it.min.js"></script>
+
+  <script>
+    const submit = async () => {
+      const answerElements = document.querySelectorAll("input.answer-input");
+      const alertElement = document.getElementById("alert");
+      const answers = [];
+
+      for (const elem of answerElements) {
+        const problemId = elem.getAttribute("problem-id");
+
+        if (problemId === null) {
+          console.warn("missing problem-id in 'answer-input' element.");
+          continue;
+        }
+
+        if (!elem.reportValidity()) return;
+
+        answers.push({
+          "problem": problemId,
+          "answer": elem.value,
+        });
+      }
+
+      const resp = await fetch("/submit", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answers),
+      });
+
+      const result = await resp.json();
+
+      alertElement.innerText = result.message;
+
+      if (result.success) {
+        alertElement.classList.remove("alert-danger");
+        alertElement.classList.add("alert-success");
+      } else {
+        alertElement.classList.remove("alert-success");
+        alertElement.classList.add("alert-danger");
+      }
+
+      alertElement.classList.remove("d-none");
+
+      if (result.failed !== null) {
+        for (const elem of answerElements) {
+          if (result.failed.includes(elem.getAttribute("problem-id"))) {
+            elem.classList.remove("is-valid");
+            elem.classList.add("is-invalid");
+          } else {
+            elem.classList.remove("is-invalid");
+            elem.classList.add("is-valid");
+          }
+        }
+      }
+
+      window.scrollTo(0, 0);
+    };
+
+    const renderMarkdown = () => {
+      const md = markdownit({
+        html: true,
+        linkify: true,
+        typographer: true,
+      });
+      const elements = document.getElementsByClassName("markdown");
+
+      for (const elem of elements) {
+        console.log(elem.innerHTML);
+        const rendered = md.render(elem.innerHTML);
+        console.log(rendered);
+        elem.innerHTML = rendered;
+      }
+    };
+
+    window.onload = () => {
+      renderMarkdown();
+    }
+  </script>
+
+</body>
+
+</html>

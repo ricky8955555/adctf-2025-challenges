@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for order in orders | reverse %}
+{% set item = order.item %}
+{% set merchant = merchants[item.merchant_id] %}
+<div class="card mb-2">
+  <div class="card-header bg-white border-bottom-0">
+    <span><b>{{ merchant.name }}</b></span>
+    <span class="float-end text-secondary">{{ order.trace[-1].type }}</span>
+  </div>
+  <div class="row g-0 px-3 py-1">
+    <div class="col-2 d-flex flex-wrap align-items-center">
+      <img src="{{ item.image }}" class="img-fluid rounded">
+    </div>
+    <div class="col-9 px-2 lh-sm py-1" style="font-size: 0.9rem;">
+      <p class="card-text mb-0">{{ item.name }}</p>
+      <p class="card-text text-secondary">配送信息: {{ order.trace[-1].detail }}</p>
+    </div>
+    <div class="col-1 text-end px-0 py-1">
+      <p class="mb-0"><small>x1</small></p>
+    </div>
+    <div class="my-2">
+      <p class="text-end mb-0"><span class="text-secondary"><small>共1件商品，实付</small></span><span class="ms-1"><b>￥{{
+            order.cost }}</b></span></p>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block footer %}
+<div style="height: 10rem"></div>
+<div class="container-fluid bg-white py-3 text-center fixed-bottom w-100 mx-0 mb-0">
+  <nav>
+    <ul class="pagination justify-content-center mb-1">
+      <li class="page-item"><a class="page-link px-5" href="/">首页</a></li>
+      <li class="page-item active"><a class="page-link px-5" href="#">订单</a></li>
+    </ul>
+  </nav>
+</div>
+{% endblock %}

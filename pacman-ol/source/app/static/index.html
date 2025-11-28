@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PacmanOL</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      background: #1a1a2e;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .game-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: #FFD700;
+      font-size: 2.2rem;
+    }
+
+    .game-container {
+      margin: 20px 0;
+      max-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #gameCanvas {
+      display: block;
+      background-color: #000;
+      max-width: 100%;
+      height: auto;
+      border: 2px solid #333;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+      justify-content: center;
+      max-width: 100%;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+
+    .status-panel {
+      display: flex;
+      gap: 30px;
+      margin: 15px 0;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .status-item {
+      text-align: center;
+    }
+
+    .status-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #FFD700;
+    }
+
+    .game-over {
+      color: #FF5252;
+      font-weight: bold;
+      font-size: 24px;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .gift-message {
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid #FFD700;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .gift-message h3 {
+      color: #FFD700;
+      margin-bottom: 10px;
+    }
+
+    #giftContent {
+      font-size: 16px;
+      color: white;
+      word-break: break-word;
+    }
+
+    .instructions {
+      margin-top: 20px;
+      text-align: center;
+      max-width: 500px;
+      padding: 10px;
+      color: #ccc;
+    }
+
+    .speed-control {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .speed-control input {
+      width: 150px;
+    }
+
+    .direction-indicator {
+      margin-top: 10px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .current-direction {
+      font-weight: bold;
+      color: #FFD700;
+    }
+
+    .canvas-info {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ccc;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .status-panel {
+        gap: 20px;
+      }
+
+      .status-value {
+        font-size: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .status-panel {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .speed-control {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-header">
+    <h1>PacmanOL</h1>
+    <p>使用方向键或 WASD 控制吃豆人方向</p>
+  </div>
+
+  <div id="gameOverMessage" class="game-over" style="display: none;">
+    游戏结束!
+  </div>
+
+  <div id="giftMessage" class="gift-message" style="display: none;">
+    <h3>游戏奖励</h3>
+    <p id="giftContent">加载中...</p>
+  </div>
+
+  <div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+
+  <div class="canvas-info" id="canvasInfo">
+    等待游戏开始...
+  </div>
+
+  <div class="controls">
+    <button id="startButton">开始游戏</button>
+    <button id="restartButton" disabled>重新开始</button>
+  </div>
+
+  <div class="status-panel">
+    <div class="status-item">
+      <div>分数</div>
+      <div class="status-value" id="score">0</div>
+    </div>
+    <div class="status-item">
+      <div>状态</div>
+      <div class="status-value" id="status">等待开始</div>
+    </div>
+  </div>
+
+  <div class="direction-indicator">
+    当前方向: <span class="current-direction" id="currentDirection">无</span>
+  </div>
+
+  <div class="speed-control">
+    <label for="speedSlider">游戏速度:</label>
+    <input type="range" id="speedSlider" min="100" max="1000" step="50" value="400">
+    <span id="speedValue">400ms</span>
+  </div>
+
+  <div class="instructions">
+    <p>吃豆人会自动移动，使用键盘控制方向</p>
+    <p>避开幽灵，吃掉豆子获得分数</p>
+  </div>
+
+  <script>
+    let canvas;
+    let ctx;
+    let gameState = null;
+    let settings = null;
+    let baseCellSize = 15;
+    let currentDirection = null;
+    let gameInterval = null;
+    let moveInterval = 400;
+    const startButton = document.getElementById('startButton');
+    const restartButton = document.getElementById('restartButton');
+    const scoreElement = document.getElementById('score');
+    const statusElement = document.getElementById('status');
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue = document.getElementById('speedValue');
+    const currentDirectionElement = document.getElementById('currentDirection');
+    const canvasInfo = document.getElementById('canvasInfo');
+    const giftMessage = document.getElementById('giftMessage');
+    const giftContent = document.getElementById('giftContent');
+    const directionMap = {
+      'ArrowUp': 0b10,
+      'ArrowDown': 0b11,
+      'ArrowLeft': 0b00,
+      'ArrowRight': 0b01,
+      'w': 0b10,
+      'W': 0b10,
+      's': 0b11,
+      'S': 0b11,
+      'a': 0b00,
+      'A': 0b00,
+      'd': 0b01,
+      'D': 0b01
+    };
+    const directionNames = {
+      0b00: '左',
+      0b01: '右',
+      0b10: '上',
+      0b11: '下'
+    };
+    function initGame() {
+      canvas = document.getElementById('gameCanvas');
+      ctx = canvas.getContext('2d');
+      document.addEventListener('keydown', handleKeyPress);
+      startButton.addEventListener('click', startGame);
+      restartButton.addEventListener('click', startGame);
+      speedSlider.addEventListener('input', updateSpeed);
+      updateSpeedDisplay();
+      window.addEventListener('resize', handleResize);
+    }
+    function updateSpeed() {
+      moveInterval = parseInt(speedSlider.value);
+      updateSpeedDisplay();
+      if (gameInterval) {
+        clearInterval(gameInterval);
+        gameInterval = setInterval(autoMove, moveInterval);
+      }
+    }
+    function updateSpeedDisplay() {
+      speedValue.textContent = `${moveInterval}ms`;
+    }
+    function resizeCanvas() {
+      if (!settings) return;
+      const maxWidth = window.innerWidth * 0.9;
+      const maxHeight = window.innerHeight * 0.6;
+      const neededWidth = settings.canvas_size.x * baseCellSize;
+      const neededHeight = settings.canvas_size.y * baseCellSize;
+      let scale = 1;
+      if (neededWidth > maxWidth || neededHeight > maxHeight) {
+        scale = Math.min(maxWidth / neededWidth, maxHeight / neededHeight);
+      }
+      canvas.width = neededWidth;
+      canvas.height = neededHeight;
+      canvas.style.width = `${neededWidth * scale}px`;
+      canvas.style.height = `${neededHeight * scale}px`;
+      canvasInfo.textContent = `游戏区域: ${settings.canvas_size.x} × ${settings.canvas_size.y}`;
+    }
+    function handleResize() {
+      if (settings) {
+        resizeCanvas();
+        drawGame();
+      }
+    }
+    async function startGame() {
+      try {
+        statusElement.textContent = '正在连接服务器...';
+        giftMessage.style.display = 'none';
+        const response = await fetch('/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`服务器错误: ${response.status}`);
+        }
+
+        settings = await response.json();
+        resizeCanvas();
+        await updateGameState();
+        currentDirection = null;
+        currentDirectionElement.textContent = '无';
+        if (gameInterval) {
+          clearInterval(gameInterval);
+        }
+        gameInterval = setInterval(autoMove, moveInterval);
+        startButton.disabled = true;
+        restartButton.disabled = false;
+        gameOverMessage.style.display = 'none';
+        statusElement.textContent = '游戏中';
+
+      } catch (error) {
+        console.error('游戏启动失败:', error);
+        statusElement.textContent = `游戏启动失败: ${error.message}`;
+      }
+    }
+    async function autoMove() {
+      if (!gameState || !gameState.alive) {
+        return;
+      }
+      const directionToSend = currentDirection !== null ? currentDirection : gameState.direction;
+      await updateGameState(directionToSend);
+    }
+    async function updateGameState(direction = null) {
+      try {
+        let requestBody = {};
+        if (direction !== null) {
+          requestBody = { direction: direction };
+        }
+
+        const response = await fetch('/next', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          throw new Error(`服务器错误: ${response.status}`);
+        }
+
+        gameState = await response.json();
+        scoreElement.textContent = gameState.score;
+        drawGame();
+        if (!gameState.alive) {
+          endGame();
+        }
+
+      } catch (error) {
+        console.error('更新游戏状态失败:', error);
+        statusElement.textContent = `更新失败: ${error.message}`;
+      }
+    }
+    function drawGame() {
+      if (!gameState) return;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#FFF';
+      gameState.dots.forEach(dot => {
+        ctx.beginPath();
+        ctx.arc(
+          dot.x * baseCellSize + baseCellSize / 2,
+          dot.y * baseCellSize + baseCellSize / 2,
+          baseCellSize / 6,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      });
+      drawPacman(
+        gameState.pacman.x * baseCellSize + baseCellSize / 2,
+        gameState.pacman.y * baseCellSize + baseCellSize / 2,
+        baseCellSize / 2,
+        gameState.direction
+      );
+      drawGhost(
+        gameState.ghost.x * baseCellSize + baseCellSize / 2,
+        gameState.ghost.y * baseCellSize + baseCellSize / 2,
+        baseCellSize / 2
+      );
+    }
+    function drawPacman(x, y, radius, direction) {
+      ctx.save();
+      ctx.fillStyle = '#FFD700';
+      let startAngle, endAngle;
+      switch (direction) {
+        case 0b00:
+          startAngle = 1.25 * Math.PI;
+          endAngle = 0.75 * Math.PI;
+          break;
+        case 0b01:
+          startAngle = 0.25 * Math.PI;
+          endAngle = 1.75 * Math.PI;
+          break;
+        case 0b10:
+          startAngle = 1.75 * Math.PI;
+          endAngle = 1.25 * Math.PI;
+          break;
+        case 0b11:
+          startAngle = 0.75 * Math.PI;
+          endAngle = 0.25 * Math.PI;
+          break;
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, radius, startAngle, endAngle);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      let eyeX, eyeY;
+      switch (direction) {
+        case 0b00:
+          eyeX = x - radius * 0.3;
+          eyeY = y - radius * 0.3;
+          break;
+        case 0b01:
+          eyeX = x + radius * 0.3;
+          eyeY = y - radius * 0.3;
+          break;
+        case 0b10:
+          eyeX = x - radius * 0.3;
+          eyeY = y - radius * 0.3;
+          break;
+        case 0b11:
+          eyeX = x - radius * 0.3;
+          eyeY = y + radius * 0.3;
+          break;
+      }
+
+      ctx.beginPath();
+      ctx.arc(eyeX, eyeY, radius * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+    function drawGhost(x, y, radius) {
+      ctx.save();
+      ctx.fillStyle = '#FF5252';
+      ctx.beginPath();
+      ctx.arc(x, y - radius * 0.1, radius * 0.9, Math.PI, 0, false);
+      ctx.lineTo(x + radius, y + radius * 0.7);
+      const waveCount = 3;
+      const waveWidth = (radius * 2) / waveCount;
+      for (let i = 0; i < waveCount; i++) {
+        ctx.quadraticCurveTo(
+          x + radius - waveWidth * (i + 0.5),
+          y + radius * 0.9,
+          x + radius - waveWidth * (i + 1),
+          y + radius * 0.7
+        );
+      }
+
+      ctx.lineTo(x - radius, y + radius * 0.7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(x - radius * 0.4, y - radius * 0.1, radius * 0.3, 0, Math.PI * 2);
+      ctx.arc(x + radius * 0.4, y - radius * 0.1, radius * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#1a1a2e';
+      ctx.beginPath();
+      ctx.arc(x - radius * 0.4, y - radius * 0.1, radius * 0.15, 0, Math.PI * 2);
+      ctx.arc(x + radius * 0.4, y - radius * 0.1, radius * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    }
+    function handleKeyPress(event) {
+      if (!gameState || !gameState.alive) return;
+
+      const direction = directionMap[event.key];
+      if (direction !== undefined) {
+        currentDirection = direction;
+        currentDirectionElement.textContent = directionNames[direction];
+      }
+    }
+    async function endGame() {
+      statusElement.textContent = '游戏结束';
+      gameOverMessage.style.display = 'block';
+      restartButton.disabled = false;
+
+      if (gameInterval) {
+        clearInterval(gameInterval);
+        gameInterval = null;
+      }
+      try {
+        giftMessage.style.display = 'block';
+        giftContent.textContent = '正在获取奖励...';
+
+        const response = await fetch('/gift', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`获取奖励失败: ${response.status}`);
+        }
+
+        const giftText = await response.text();
+        giftContent.textContent = giftText;
+      } catch (error) {
+        console.error('获取奖励失败:', error);
+        giftContent.textContent = `获取奖励失败: ${error.message}`;
+      }
+    }
+    window.addEventListener('load', initGame);
+  </script>
+</body>
+
+</html>

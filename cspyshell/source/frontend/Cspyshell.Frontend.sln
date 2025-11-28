@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cspyshell.Frontend.Shell", "Cspyshell.Frontend.Shell\Cspyshell.Frontend.Shell.csproj", "{3BB40A18-6602-479E-BAF5-0411B8CBB7B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cspyshell.Frontend.Core", "Cspyshell.Frontend.Core\Cspyshell.Frontend.Core.csproj", "{36CF7160-4894-448A-8421-7C206295B775}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BB40A18-6602-479E-BAF5-0411B8CBB7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BB40A18-6602-479E-BAF5-0411B8CBB7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BB40A18-6602-479E-BAF5-0411B8CBB7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BB40A18-6602-479E-BAF5-0411B8CBB7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CF7160-4894-448A-8421-7C206295B775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36CF7160-4894-448A-8421-7C206295B775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36CF7160-4894-448A-8421-7C206295B775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36CF7160-4894-448A-8421-7C206295B775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86825423-6C96-4833-A5B7-633585121546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86825423-6C96-4833-A5B7-633585121546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86825423-6C96-4833-A5B7-633585121546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86825423-6C96-4833-A5B7-633585121546}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

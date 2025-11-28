@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [[ $METHOD == "GET" ]]; then
+    REQ_USERNAME="$QUERY_USERNAME"
+    REQ_PASSWORD="$QUERY_USERNAME"
+elif [[ $METHOD == "POST" ]]; then
+    REQ_USERNAME="$BODY_USERNAME"
+    REQ_PASSWORD="$BODY_USERNAME"
+else
+    echo "Status: 405"
+    echo "Content-Type: text/plain"
+    echo
+    echo "Method not allowed."
+fi
+
+if [[ "$REQ_USERNAME" != "$USERNAME" || "$REQ_PASSWORD" != "$PASSWORD" ]]; then
+    echo "Status: 303"
+    echo "Location: /login.html"
+    echo
+    exit 1
+fi
+
+mkdir -p data/sessions
+
+token="$(head -c 8 /dev/random | xxd -p)"
+touch "data/sessions/$token"
+
+echo "Status: 303"
+echo "Location: /"
+echo "Set-Cookie: token=$token"
+echo

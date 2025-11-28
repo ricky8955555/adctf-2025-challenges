@@ -1,0 +1,19 @@
+title: Neko Q&A (GDUTCTF-2025 / ADCTF-2025 ver.)
+result: flag{}
+report: https://reqbin.rkmiao.eu.org/adctf-2025-nekoqa-08e7ca5516/access
+problems:
+  - id: 2d7b4a6b-a01b-427a-b188-d84c38affa7f
+    question: "十一假期到了，rk 和 LSJGP 来到了沪国（aka. 上海）玩。下图是 rk 在旅程第二天拍的一张照片，你知道这是在举行什么活动吗？请写出 **活动形象代表人物的英文名称、本届活动的起始和终止日期**（名称和日期之间使用 **斜杠 `/` 进行分隔**，起始和终止时间使用 **短横线 `-` 进行连接**，日期格式为 `YYYYmmdd`，格式示例: `Izumi Konata/20070408-20070917`）\n\n
+    ![](https://pic1.imgdb.cn/item/69211da73203f7be001df843.webp)"
+    validation: '[A-Za-z0-9 ]+\/\d{8}-\d{8}'
+    answers: ["Racing Miku/20250930-20251008"]
+  - id: 6d23e6e5-d2ca-4c3d-adc0-818c094a3464
+    question: "在旅程的第三天，在 rk 不知情之下，LSJGP 把 rk ~~拐到了~~一个陌生的地方去看立像。你知道 rk ~~被拐到~~哪里去了吗？请写出 **该立像的揭幕日期、所处购物中心的运营企业名称**（日期格式为 `YYYYmmdd`，日期和名称之间使用 **斜杠 `/` 进行分隔**，企业如果为境外企业请使用 **所属地语言文字** 表示，格式示例: `20110815/株式会社京都アニメーション`）\n\n
+    ![](https://pic1.imgdb.cn/item/69211da73203f7be001df845.webp)"
+    validation: '\d{8}\/.+'
+    answers: ["20210528/三井不動産株式会社"]
+  - id: 0c0e13e7-708e-44c3-b9a9-09bcd35fdc0e
+    question: "转眼间，旅程已经来到了第四天，rk 和 LSJGP 乘坐动车来到了苏州，rk 在来到的第一天晚上到处乱逛。下面是 rk 不知道在哪拍的一张照片，看到非常好看就拍下来了。你知道 rk 拍照点 **所在商业场所的名称及其开业日期** 吗？（名称和日期之间使用 **斜杠 `/` 进行分隔**，日期格式为 `YYYYmmdd`，格式示例：`正佳广场/20050115`）\n\n
+    ![](https://pic1.imgdb.cn/item/69211da73203f7be001df844.webp)"
+    validation: '.+/\d{8}'
+    answers: ["圆融时代广场/20080928"]

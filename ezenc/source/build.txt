@@ -1,0 +1,2 @@
+zig cc -s -fno-sanitize=undefined --target=x86_64-windows-gnu -o ezenc.exe main.c
+zig cc -s -fno-sanitize=undefined --target=x86_64-linux-gnu -o ezenc main.c

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [[ "$METHOD" != "GET" ]]; then
+    echo "Status: 405"
+    echo "Content-Type: text/plain"
+    echo
+    echo "Method not allowed."
+fi
+
+if ! ugi-bin/auth.ugi; then
+    exit 1
+fi
+
+file_id=$(basename "$QUERY_ID")
+file_path="data/task-targets/$file_id"
+
+if [[ ! -f "$file_path" ]]; then
+    echo "Status: 404"
+    echo "Content-Type: text/plain"
+    echo
+    echo "Task not exists."
+    exit 1
+fi
+
+pid=$(cat "$file_path")
+
+echo "Status: 200"
+echo "Content-Type: text/plain"
+echo
+cat "$file_path"

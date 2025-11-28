@@ -1,0 +1,18 @@
+#!/bin/sh
+
+unauth() {
+    echo "Status: 303"
+    echo "Location: /login.html"
+    echo
+    exit 1
+}
+
+if [[ -z "$COOKIE_TOKEN" ]]; then
+    unauth
+fi
+
+token_path="data/sessions/$COOKIE_TOKEN"
+if [[ ! $(find "$token_path" -mmin "-15" 2> /dev/null) ]]; then
+    rm -f "$token_path"
+    unauth
+fi

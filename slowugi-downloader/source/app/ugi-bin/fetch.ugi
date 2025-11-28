@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [[ "$METHOD" != "GET" ]]; then
+    echo "Status: 405"
+    echo "Content-Type: text/plain"
+    echo
+    echo "Method not allowed."
+fi
+
+if ! ugi-bin/auth.ugi; then
+    exit 1
+fi
+
+if [[ -z "$QUERY_URL" ]]; then
+    echo "Status: 400"
+    echo "Content-Type: text/plain"
+    echo
+    echo "No url provided."
+    exit 1
+fi
+
+mkdir -p data/task-logs
+mkdir -p data/task-pids
+mkdir -p data/task-targets
+mkdir -p data/files
+
+file_id="$(head -c 8 /dev/random | xxd -p)"
+
+echo -n "$QUERY_URL" > "data/task-targets/$file_id"
+
+nohup wget "$QUERY_URL" -O "data/files/$file_id" > "data/task-logs/$file_id" 2>&1 &
+echo -n $! > "data/task-pids/$file_id"
+
+echo "Status: 200"
+echo "Content-Type: text/plain"
+echo
+echo "$file_id"

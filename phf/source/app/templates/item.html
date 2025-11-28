@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<img src="{{ item.image }}" class="img-fluid rounded mb-3 w-100">
+
+<div class="card mb-3">
+  <div class="card-body">
+    <p class="card-title text-danger mb-3"><small>￥</small><span class="fs-1">{{ (item.value * item.discount) | round(2)
+        }}</span><small class="fs-6 ms-2">到手价</small></p>
+    <h5 class="card-subtitle mb-4"><b>{{ item.name }}</b></h5>
+    <p class="card-text mb-2"><small><span class="text-secondary">详情</span><span class="ms-3">{{ item.name
+          }}</span></small>
+    <p class="card-text"><small><span class="text-secondary">配送</span><span class="ms-3 text-danger">配送费
+          ￥0</span><span class="ms-2 text-secondary">·</span><span class="ms-2">约{{ cost }}送达 {{ distance
+          }}</span></small>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div style="height: 10rem"></div>
+<div class="container-fluid bg-white py-2 text-center fixed-bottom w-100 mx-0 mb-0">
+  <div class="row px-1 btn-group w-100">
+    <a href="/order/{{ item.id }}" class="btn btn-lg btn-light col-5 lh-1 text-danger fw-semibold"><small>￥</small><span
+        class="fs-3">{{ item.value }}</span><br><small class="fs-6">单买价</small></a>
+    <a href="/order/{{ item.id }}?discount=true"
+      class="btn btn-lg btn-danger col-7 lh-1 fw-semibold"><small>￥</small><span class="fs-3">{{ (item.value *
+        item.discount) | round(2) }}</span><br><small class="fs-6">拼单价 马上抢</small></a>
+  </div>
+</div>
+{% endblock %}

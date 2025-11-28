@@ -1,0 +1,4 @@
+key: "DakaraMotto!ChikazukitaiKaraMotto!KoeKikasete~SonoTeTsukandara,HanasanaiKara~IsseenoodeMottoMottoJumpHigh!"
+plaintext: "Wow! You know how to make the program decompilable with decompiler. And here I will give you the flag! But please wait for me to sing the song!  Mada saisho wa kiechaisou na omoi kara (ippozutsu). Kizuitara ugokidashita sutoori- (Ichi ni- san hai!) Hitori ja todokisou mo nai basho (ima wa mou) Yume janai anata ga iru kara (hoppu suteppu janpu hai!).  Here is your flag: flag{u_R_m@s73r_iN_d3flAt1n9_c0ntrOl_F10w!}"
+
+nasm -o core.o -f elf64 core-obf.asm ; clang -o more-jump-more core.o main.c

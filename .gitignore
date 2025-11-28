@@ -1,0 +1,20 @@
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+
+# .NET artifacts
+bin/
+obj/
+
+# Challenge artifacts / attachments
+*/artifacts
+*/attachments
+/artifacts.tar.gz
+
+# Challenge solution working directory
+*/solution
+
+# VSCode configurations
+.vscode/
