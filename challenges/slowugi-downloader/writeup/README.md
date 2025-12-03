@@ -60,7 +60,7 @@ Header 键值对没有添加前缀，直接转换成全大写作为环境变量�
 #include <unistd.h>
 #include <stdio.h>
 
-__attribute__((constructor)) void init(size_t size) {
+__attribute__((constructor)) void init() {
     const char* cmd = getenv("QUERY_CMD");
 
     char* argv[] = {"sh", "-c", (char*)cmd, NULL};
