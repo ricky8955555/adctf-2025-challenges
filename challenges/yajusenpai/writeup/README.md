@@ -69,3 +69,5 @@ if __name__ == "__main__":
 ![](images/image7.png)
 
 Flag 为: `flag{b@53Ii4_y@j7s3nPa1_yAr!maS7n3333!!!}`
+
+> ~~这个 rk 设计出了这么臭的编码、这么臭的 Flag，大抵是不能要了吧（悲~~

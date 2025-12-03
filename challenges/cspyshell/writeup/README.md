@@ -46,6 +46,8 @@ Python 有个特性，它可以直接将数个 Python 文件打包成一个 Zip 
 
 ![](images/image6.png)
 
+> 这边 Binpack 传入的 Key 是 `nIc0N1ko7i-p3rR#`，~~跟我一起来 にこにこに〜~~
+
 或者直接自己写个 `Binpack` 实现来解包，这边将不做赘述。
 
 解包之后的 `core.dll` 是可以直接在 ILSpy 正常反编译的:
@@ -240,6 +242,8 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 ```
+
+> ~~关注 *P丸様。*　谢谢喵！~~
 
 执行后得到 Flag:
 
