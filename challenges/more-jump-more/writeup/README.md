@@ -449,6 +449,15 @@ int main() {
 }
 ```
 
+补充上头文件 `decrypt.h`:
+
+```c
+#include <stddef.h>
+
+extern uint64_t encrypt(void* buf, size_t bufsize, const void* key,
+                        size_t keysize);
+```
+
 使用以下指令编译成可执行文件:
 
 ```shell
